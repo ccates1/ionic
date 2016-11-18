@@ -1,0 +1,409 @@
+<ion-view title="Contest" id="contest" cache-view="false">
+<ion-nav-buttons side="left">
+    <a class="button back-button buttons button-clear header-item" href="#/page1/contestLobby">
+      <i class="icon ion-close-round"></i> 
+    </a>
+  </ion-nav-buttons>
+    <ion-content class="has-header">
+        <div class="padding">
+            <div class="list card" style="background-color:#223843">
+                <div class="item item-text-wrap" style="text-align: center;  background-color: #223843;">
+                    <div class="row" style="background-color:#223843;">
+                        <div class="col">
+                            <h3 style="color: #FFE939; opacity: 1; font-size: 16px;"><i class="icon ion-android-calendar"></i> Start:</h3>
+                            <p style="color: #f2f2f2; font-size: 10px">{{contest.start | amDateFormat: 'dddd, h:mm a'}}</p>
+                        </div>
+                        <div class="col">
+                            <h3 style="color: #FFE939; opacity: 1; font-size: 16px;"><i class="icon ion-android-calendar"></i> End:</h3>
+                            <p style="color: #f2f2f2; font-size: 10px">{{contest.end | amDateFormat: 'dddd, h:mm a'}}</p>
+                        </div>
+                    </div>
+                    <div class="list" style="background-color:#223843">
+                        <div class="item item-icon-left item-icon-right" style="color: #f2f2f2; background-color:#223843; border-top: 1px solid grey">
+                            <i class="icon ion-ios-information" style="color: #FFE939; opacity: 1;"></i>
+                            <div style="font-size: 13px;color: #f2f2f2">League(s) Included: {{contest.tags}}
+                            </div>
+                        </div>
+                        <div class="item item-icon-left item-icon-right" style="color: #f2f2f2; background-color:#223843; border-top: 1px solid grey">
+                            <i class="icon ion-pound" style="color: #FFE939; opacity: 1;"></i>
+                            <div style="color: #f2f2f2">Number of Matchups</div>
+                            <i class="badge badge-custom">{{contest.numberOfMatchups}}</i>
+                        </div>
+                        <div class="item item-icon-left item-icon-right" style="color: #f2f2f2; background-color: #223843; border-top: 1px solid grey">
+                            <i class="icon ion-ios-people" style="color: #FFE939; opacity: 1;"></i>
+                            <div style="color: #f2f2f2">Number of Users</div>
+                            <i class="badge badge-custom">{{contest.participants}}</i>
+                        </div>
+                        <a class="item item-icon-left item-icon-right" href="javascript:void(0)" ng-click="openModal(1)" style="color: #f2f2f2; background-color: #223843; border-bottom: 1px solid grey; border-top: 1px solid grey">
+                            <i class="icon ion-trophy" style="color: #FFE939; opacity: 1;"></i>
+                            <div style="color: #f2f2f2">Contest Leaderboard</div>
+                            <i class="icon ion-ios-arrow-right" style="color: #FFE939; opacity: 1;"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="!madePicks">
+                <form name="contestForm" id="contestForm" ng-submit="submitPicks(contestForm.$valid)" novalidate>
+                    <div class="list">
+                        <div class="item-custom" ng-repeat="matchup in contest.matchups">
+                            <h4 class="border-top"></h4>
+                            <div class="row" style="background-color: #223843">
+                                <div class="col col-50">
+                                    <ion-radio id="matchup{{matchup.homeTeam}}" name="matchup{{matchup.matchupId}}" ng-model="matchup.selectedTeam" ng-value="matchup.homeTeam" ng-show="!madePicks" required>
+                                        <img class="test" ng-src="{{matchup.homeLogo}}"></img>
+                                        <div style="display:inline-block; text-align:center;">
+                                            <p style="color: #f7f7f7;">{{matchup.homeTeam}}</p>
+                                            <p style="color: #f7f7f7;">{{matchup.percentPickedHome}}%</p>
+                                        </div>
+                                    </ion-radio>
+                                </div>
+                                <div class="col col-50">
+                                    <ion-radio id="matchup{{matchup.awayTeam}}" name="matchup{{matchup.matchupId}}" ng-model="matchup.selectedTeam" ng-value="matchup.awayTeam" ng-show="!madePicks" required>
+                                        <img class="test" ng-src="{{matchup.awayLogo}}" style="margin-right: 5px;"></img>
+                                        <div style="display:inline-block; text-align:center;">
+                                            <p style="color: #f7f7f7;">{{matchup.awayTeam}}</p>
+                                            <p style="color: #f7f7f7;">{{matchup.percentPickedAway}}%</p>
+                                        </div>
+                                    </ion-radio>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="button-bar">
+                        <button type="submit" class="button button-positive">Submit</button>
+                        <button class="button button-energized" disabled>Edit</button>
+                        <button class="button button-assertive" disabled>Delete</button>
+                    </div>
+                </form>
+            </div>
+
+            <div ng-if="madePicks && !contestStarted && !editUserPicks">
+                <div class="list">
+                    <div class="item-custom" ng-repeat="matchup in contest.matchups">
+                        <h4 class="border-top"></h4>
+                        <div class="row">
+                            <div class="col col-50">
+                                <div ng-show="checkPickSet(matchup.homeTeam) == true">
+                                    <div class="item item-radio-custom">
+                                        <img class="test" ng-src="{{matchup.homeLogo}}"></img>
+                                        <div style="display:inline-block; text-align:center;">
+                                            <p style="color: #f7f7f7;">{{matchup.homeTeam}}</p>
+                                            <p style="color: #f7f7f7;">{{matchup.percentPickedHome}}%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ng-show="checkPickSet(matchup.homeTeam) == false">
+                                    <div class="item item-radio-custom-no">
+                                        <img class="test" ng-src="{{matchup.homeLogo}}"></img>
+                                        <div style="display:inline-block; text-align:center;">
+                                            <p style="color: #f7f7f7;">{{matchup.homeTeam}}</p>
+                                            <p style="color: #f7f7f7;">{{matchup.percentPickedHome}}%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-50">
+                                <div ng-show="checkPickSet(matchup.awayTeam) == true">
+                                    <div class="item item-radio-custom">
+                                        <img class="test" ng-src="{{matchup.awayLogo}}"></img>
+                                        <div style="display:inline-block; text-align:center;">
+                                            <p style="color: #f7f7f7;">{{matchup.awayTeam}}</p>
+                                            <p style="color: #f7f7f7;">{{matchup.percentPickedAway}}%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ng-show="checkPickSet(matchup.awayTeam) == false">
+                                    <div class="item item-radio-custom-no">
+                                        <img class="test" ng-src="{{matchup.awayLogo}}"></img>
+                                        <div style="display:inline-block; text-align:center;">
+                                            <p style="color: #f7f7f7;">{{matchup.awayTeam}}</p>
+                                            <p style="color: #f7f7f7;">{{matchup.percentPickedAway}}%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-bar">
+                    <button type="submit" class="button button-positive" disabled>Submit</button>
+                    <button class="button button-energized" ng-click="editPicks()">Edit</button>
+                    <button class="button button-assertive" ng-click="deletePicks()">Delete</button>
+                </div>
+            </div>
+
+            <div ng-if="editUserPicks">
+                <form name="editPickForm" ng-submit="submitEditPicks(contestForm.$valid)" novalidate>
+                    <div class="list">
+                        <div class="item-custom" ng-repeat="matchup in contest.matchups">
+                            <h4 class="border-top"></h4>
+                            <div class="row">
+                                <div class="col col-50">
+                                    <ion-radio id="matchup{{matchup.homeTeam}}" name="matchup{{matchup.matchupId}}" ng-model="matchup.selectedTeam" ng-value="matchup.homeTeam" required>
+                                        <img class="test" ng-src="{{matchup.homeLogo}}"></img>
+                                        <div style="display:inline-block; text-align:center;">
+                                            <p style="color: #f7f7f7;">{{matchup.homeTeam}}</p>
+                                            <p style="color: #f7f7f7;">{{matchup.percentPickedHome}}%</p>
+                                        </div>
+                                    </ion-radio>
+                                </div>
+                                <div class="col col-50">
+                                    <ion-radio id="matchup{{matchup.awayTeam}}" name="matchup{{matchup.matchupId}}" ng-model="matchup.selectedTeam" ng-value="matchup.awayTeam" required>
+                                        <img class="test" ng-src="{{matchup.awayLogo}}" style="margin-right: 5px;"></img>
+                                        <div style="display:inline-block; text-align:center;">
+                                            <p style="color: #f7f7f7;">{{matchup.awayTeam}}</p>
+                                            <p style="color: #f7f7f7;">{{matchup.percentPickedAway}}%</p>
+                                        </div>
+                                    </ion-radio>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="button-bar">
+                        <button type="submit" class="button button-positive">Submit</button>
+                        <button class="button button-assertive" ng-click="cancel()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <div ng-if="contestStarted && !ended">
+                <div class="list">
+                    <div class="item-custom" ng-repeat="matchup in contest.matchups">
+                        <h4 class="border-top"></h4>
+                        <div class="row">
+                            <div class="col col-50">
+                                <div ng-show="checkPickSet(matchup.homeTeam) == true">
+                                    <div class="item item-radio-custom">
+                                        <img class="test" ng-src="{{matchup.homeLogo}}"></img>
+                                        <div style="display:inline-block; text-align:center;">
+                                            <p style="color: #f7f7f7;">{{matchup.homeTeam}}</p>
+                                            <p style="color: #f7f7f7;">{{matchup.percentPickedHome}}%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ng-show="checkPickSet(matchup.homeTeam) == false">
+                                    <div class="item item-radio-custom-no">
+                                        <img class="test" ng-src="{{matchup.homeLogo}}"></img>
+                                        <div style="display:inline-block; text-align:center;">
+                                            <p style="color: #f7f7f7;">{{matchup.homeTeam}}</p>
+                                            <p style="color: #f7f7f7;">{{matchup.percentPickedHome}}%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-50">
+                                <div ng-show="checkPickSet(matchup.awayTeam) == true">
+                                    <div class="item item-radio-custom">
+                                        <img class="test" ng-src="{{matchup.awayLogo}}"></img>
+                                        <div style="display:inline-block; text-align:center;">
+                                            <p style="color: #f7f7f7;">{{matchup.awayTeam}}</p>
+                                            <p style="color: #f7f7f7;">{{matchup.percentPickedAway}}%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ng-show="checkPickSet(matchup.awayTeam) == false">
+                                    <div class="item item-radio-custom-no">
+                                        <img class="test" ng-src="{{matchup.awayLogo}}"></img>
+                                        <div style="display:inline-block; text-align:center;">
+                                            <p style="color: #f7f7f7;">{{matchup.awayTeam}}</p>
+                                            <p style="color: #f7f7f7;">{{matchup.percentPickedAway}}%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-if="ended">
+                <div class="card">
+                    <div class="text-center">
+                        <h5>Contest has ended and results are posted!</h5>
+                        <h5>Contest Winners are highlighted in green.</h5>
+                    </div>
+                </div>
+                <div class="list">
+                    <div class="item-custom" ng-repeat="matchup in contest.matchups">
+                        <h4 class="border-top"></h4>
+                        <div class="row">
+                            <div class="col col-50">
+                                <div ng-show="checkWinnerSet(matchup.homeTeam) == true">
+                                    <div class="item item-radio-custom">
+                                        <img class="test" ng-src="{{matchup.homeLogo}}">
+                                        <div style="display:inline-block; text-align:center;">
+                                            <p style="color: #f7f7f7;">{{matchup.homeTeam}}</p>
+                                            <p style="color: #f7f7f7;">{{matchup.percentPickedHome}}%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ng-show="checkWinnerSet(matchup.homeTeam) == false">
+                                    <div class="item item-radio-custom-no">
+                                        <img class="test" ng-src="{{matchup.homeLogo}}">
+                                        <div style="display:inline-block; text-align:center;">
+                                            <p style="color: #f7f7f7;">{{matchup.homeTeam}}</p>
+                                            <p style="color: #f7f7f7;">{{matchup.percentPickedHome}}%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-50">
+                                <div ng-show="checkWinnerSet(matchup.awayTeam) == true">
+                                    <div class="item item-radio-custom">
+                                        <img class="test" ng-src="{{matchup.awayLogo}}">
+                                        <div style="display:inline-block; text-align:center;">
+                                            <p style="color: #f7f7f7;">{{matchup.awayTeam}}</p>
+                                            <p style="color: #f7f7f7;">{{matchup.percentPickedAway}}%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ng-show="checkWinnerSet(matchup.awayTeam) == false">
+                                    <div class="item item-radio-custom-no">
+                                        <img class="test" ng-src="{{matchup.awayLogo}}">
+                                        <div style="display:inline-block; text-align:center;">
+                                            <p style="color: #f7f7f7;">{{matchup.awayTeam}}</p>
+                                            <p style="color: #f7f7f7;">{{matchup.percentPickedAway}}%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="spacer" style="height: 10px"></div>
+            <div class="card">
+                <div class="padding">
+                    <div class="text-center">
+                        <h4 class="border-top"><i class="ion-chatboxes"></i> Comments: {{contest.posts.length}}</h4>
+                        <div class="spacer" style="height: 4px"></div>
+                        <div style="border-bottom: thin ridge #FFE939"></div>
+                        <div class="spacer" style="height: 4px"></div>
+                        <div class="text-center">
+                            <textarea rows="3" ng-model="post.message" placeholder="Talk smack!">
+                            </textarea>
+                            <a class="button button-full button-positive" ng-click="addPost(post.message)">Post Comment</a>
+                        </div>
+                        <div class="list-card" ng-repeat="post in contest.posts">
+                            <div class="padding">
+                                <div class="list card">
+                                    <div class="item item-avatar">
+                                        <img src="{{post.user.picture}}">
+                                        <h2>{{post.user.displayName}}</h2>
+                                        <div ng-if="showDeletePost(post)">
+                                            <div class="ion-comment--score" style="color: #FFE939">
+                                                <span class="ion-thumbsup" ng-click="incrementPostUpvotes(post)"></span> {{post.upvotes}} <span style="color:#f2f2f2">-</span> <span class="ion-close-circled" ng-click="deletePost(post)" style="color: #ff0000"></span>
+                                            </div>
+                                        </div>
+                                        <div ng-if="!showDeletePost(post)">
+                                            <div class="ion-comment--score" style="color: #FFE939"><span class="ion-thumbsup"></span> {{post.upvotes}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item" style="word-break: break-word;">
+                                        <p style="color: #f2f2f2">{{post.title}}</p>
+                                    </div>
+                                    <a class="item item-icon-left item-icon-right" href="javascript:void(0)" ng-click="openModal(2, post)" style="color: #f2f2f2; background-color: #223843; border-top:2px solid #FFE939">
+                                        <i class="icon ion-chatbox" style="color: #FFE939; opacity: 1;"></i>
+                                        <div style="color: #f2f2f2; text-align: center;">Comment Replies</div>
+                                        <span class="badge badge-custom">{{post.comments.length}}</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </ion-content>
+    <script id="modalContestLeaderboard.html" type="text/ng-template">
+        <ion-modal-view>
+            <ion-header-bar style="background-color: #223843">
+                <button class="button button-clear button-energized-900" ng-click="closeModal(1)"><i class="ion-arrow-left-c"></i>
+                </button>
+                <h1 class="title" style="color: #ffffff; text-align: center;">Contest Leaderboard</h1>
+            </ion-header-bar>
+            <ion-content style="background-color: #EFF1F3">
+                <div class="padding">
+                    <div class="list" ng-repeat="pick in contest.picks track by $index" style="background-color: #223843">
+                        <div class="item" style="color: #f2f2f2; background-color:#223843; vertical-align:middle;">
+                            <div class="text-center">
+                                <div class="row">
+                                    <div class="col">
+                                        <img src="{{pick.user.picture}}" class="avatar" align="center">
+                                        <h5 style="color: #FFE939">User:</h5>
+                                        <p style="color:#f2f2f2">{{pick.user.displayName}}</p>
+                                    </div>
+                                    <div class="col">
+                                        <img src="stylesheets/images/king.png" width="56" height="56" align="center" />
+                                        <h5 style="color: #FFE939">Total Points:</h5>
+                                        <p style="color: #f2f2f2">{{pick.contestPoints}}</p>
+                                    </div>
+                                    <div class="col">
+                                        <img src="stylesheets/images/rank.png" width="56" height="56" align="center" />
+                                        <h5 style="color: #FFE939">Rank:</h5>
+                                        <p style="color: #f2f2f2">{{pick.contestRank}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <h5 style="color: #FFE939">Selected Teams: </h5>
+                                <p style="color: #f2f2f2; font-size: 9px; white-space: normal;">{{pick.selectedTeams}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ion-content>
+        </ion-modal-view>
+    </script>
+    <script id="modalComments.html" type="text/ng-template">
+        <ion-modal-view>
+            <ion-header-bar style="background-color: #223843">
+                <button class="button button-clear button-energized-900" ng-click="closeModal(2)"><i class="ion-arrow-left-c"></i>
+                </button>
+                <h1 class="title" style="color: #ffffff; text-align: center;">Comment Replies</h1>
+            </ion-header-bar>
+            <ion-content style="background-color: #EFF1F3">
+                <div class="card">
+                    <div class="padding">
+                        <div class="text-center">
+                            <div class="item item-avatar">
+                                <img src="{{post.user.picture}}">
+                                <h2>{{post.user.displayName}}</h2>
+                                <p>{{post.title}}</p>
+                            </div>
+                            <div class="spacer" style="height: 4px"></div>
+                            <div class="text-center">
+                                <textarea rows="3" ng-model="comment.message" placeholder="Talk smack!">
+                                </textarea>
+                                <a class="button button-full button-positive" ng-click="addComment(comment.message, post)">Post Reply</a>
+                            </div>
+                            <h4 class="border-top"><i class="ion-chatboxes"></i> Comment Replies</h4>
+                            <div class="list-card" ng-repeat="comment in post.comments track by $index">
+                                <div class="padding">
+                                    <div class="list card">
+                                        <div class="item item-avatar">
+                                            <img src="{{comment.user.picture}}">
+                                            <h2>{{comment.user.displayName}}</h2>
+                                            <div ng-if="showDeleteComment(comment)">
+                                                <div class="ion-comment--score" style="color: #FFE939">
+                                                    <span class="ion-thumbsup" ng-click="incrementCommentUpvotes(post, comment)"></span> {{comment.upvotes}} <span style="color:#f2f2f2">-</span> <span class="ion-close-circled" ng-click="deleteComment(post, comment)" style="color: #ff0000"></span>
+                                                </div>
+                                            </div>
+                                            <div ng-if="!showDeleteComment(comment)">
+                                                <div class="ion-comment--score" style="color: #FFE939"><span class="ion-thumbsup"></span> {{comment.upvotes}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="item" style="word-break: break-word;">
+                                            <p style="color: #f2f2f2">{{comment.message}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </ion-content>
+        </ion-modal-view>
+    </script>
+
+</ion-view>

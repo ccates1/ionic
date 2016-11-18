@@ -1,0 +1,115 @@
+<ion-view title="Leaderboard" id="page4">
+    <ion-content padding="true">
+    <div class="padding">
+    <div class="list list-inset">
+       <label class="item item-input">
+            <i class="icon ion-search placeholder-icon" style="color: #ffffff"></i>
+            <input type="text" placeholder=" Search" ng-model="search" style="width: 100%; padding-left:10px; color: #ffffff" />
+        </label>
+    </div>
+</div>
+        <div class="list" ng-repeat="user in users | filter:search | limitTo:numberOfItemsToDisplay track by $index ">
+            <div class="item-divider" style="border-bottom: thin ridge #FFE939;">
+                <div class="item" style="background-color: #e86219; vertical-align: middle">
+                    <div class="text-center">
+                        <div class="row">
+                            <div class="col">
+                                <img src="{{user.picture}}" class="avatar" align="center">
+                                <h5 style="color: #FFE929">User:</h5>
+                                <p style="color: #f2f2f2">{{user.displayName}}</p>
+                            </div>
+                            <div class="col">
+                                <img src="stylesheets/images/king.png" width="56" height="56" align="center" />
+                                <h5 style="color: #FFE939">Total Points:</h5>
+                                <p style="color: #f2f2f2">{{user.totalPoints}}</p>
+                            </div>
+                            <div class="col">
+                                <img src="stylesheets/images/rank.png" width="56" height="56" align="center" />
+                                <h5 style="color: #FFE939">Rank:</h5>
+                                <p style="color: #f2f2f2">{{user.rank}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item-list" style="background-color: #223843; padding-top: 4px; box-shadow: 0 3px 3px rgba(0, 0, 0, 0.3)">
+                <div class="item-text-wrap">
+                    <div class="list">
+                        <div class="text-center">
+                            <div class="row">
+                                <div class="col verticalLineRight">
+                                    <img src="stylesheets/images/GoldCup.png" width="24" height="24" align="center" />
+                                    <h5 style="color: #FFE939; font-size:10px">Gold Medals:</h5>
+                                    <p>{{user.timesFirstPlaceRanking}}</p>
+                                </div>
+                                <div class="col">
+                                    <img src="stylesheets/images/SilverCup.png" width="24" height="24" align="center" />
+                                    <h5 style="color: #FFE939; font-size:10px">Silver Medals:</h5>
+                                    <p>{{user.timesSecondPlaceRanking}}</p>
+                                </div>
+                                <div class="col verticalLineLeft">
+                                    <img src="stylesheets/images/BronzeCup.png" width="24" height="24" align="center" />
+                                    <h5 style="color: #FFE939; font-size:10px">Bronze Medals:</h5>
+                                    <p>{{user.timesThirdPlaceRanking}}</p>
+                                </div>
+                            </div>
+                            <div style="text-align:center">
+                                <a class="button icon-left ion-stats-bars button-clear button-dark" ng-click="openModal(user)" style="color: #FFE939;">View Pick Statistics</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <ion-infinite-scroll on-infinite="addMoreItems()" ng-if="users.length > numberOfItemsToDisplay"></ion-infinite-scroll>
+        </div>
+        </div>
+    </ion-content>
+    <script id="modal.html" type="text/ng-template">
+        <div class="modal transparent">
+            <ion-header-bar class="bar bar-header bar-energized">
+                <h1 class="title">{{user.displayName}} - Career Statistics</h1>
+                <div class="button button-clear" ng-click="modal.hide()">
+                    <span class="icon ion-close"></span>
+                </div>
+            </ion-header-bar>
+            <ion-content>
+                <div class="spacer" style="height: 5px; background-color: #ffffff;"></div>
+                <table id="leaderboard">
+                    <tr>
+                        <th></th>
+                        <th><i class="ion-ios-baseball"><i>MLB</th>
+                        <th><i class="ion-ios-americanfootball"></i>NFL</th>
+                        <th><i class="ion-ios-basketball"></i>NBA</th>
+                        <th><i class="ion-ios-americanfootball"></i>NCAAF</th>
+                        <th><i class="ion-ios-basketball"></i>NCAAM</th>
+                    </tr>
+                    <tr>
+                        <td>Total Picks</td>
+                        <td>{{user.mlb.total}}</td>
+                        <td>{{user.nfl.total}}</td>
+                        <td>{{user.nba.total}}</td>
+                        <td>{{user.ncaaf.total}}</td>
+                        <td>{{user.ncaam.total}}</td>
+                    </tr>
+                    <tr>
+                        <td>Correct Picks</td>
+                        <td>{{user.mlb.correct}}</td>
+                        <td>{{user.nfl.correct}}</td>
+                        <td>{{user.nba.correct}}</td>
+                        <td>{{user.ncaaf.correct}}</td>
+                        <td>{{user.ncaam.correct}}</td>
+                    </tr>
+                    <tr>
+                        <td>Percentage Correct</td>
+                        <td>{{user.mlb.percentage}}%</td>
+                        <td>{{user.nfl.percentage}}%</td>
+                        <td>{{user.nba.percentage}}%</td>
+                        <td>{{user.ncaaf.percentage}}%</td>
+                        <td>{{user.ncaam.percentage}}%</td>
+                    </tr>
+                </table>
+                <div class="spacer" style="height: 5px; background-color: #ffffff;"></div>
+            </ion-content>
+        </div>
+    </script>
+</ion-view>

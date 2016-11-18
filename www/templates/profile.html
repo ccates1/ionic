@@ -1,0 +1,111 @@
+<ion-view title="Profile" id="page5" cache-view="false">
+    <ion-content padding="true" class="has-header" overflow-scroll="true">
+        <div class="card">
+            <div class="list">
+                <div class="item item-avatar">
+                    <img src="{{user.picture}}">
+                    <h2>{{user.displayName}}</h2>
+                    <p>{{user.email}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="card" style="padding-bottom: 15px">
+            <div class="padding">
+                <h4 class="border-top">
+                  <i class="icon ion-trophy"></i>
+                  Awards
+              </h4>
+                <div class="list">
+                    <a class="item item-thumbnail-left">
+                        <img src="stylesheets/images/GoldCup.png">
+                        <div class="item-text-center item-text-wrap">
+                            <h2>First Place Finishes: {{user.timesFirstPlaceRanking}}</h2>
+                        </div>
+                    </a>
+                    <a class="item item-thumbnail-left">
+                        <img src="stylesheets/images/SilverCup.png">
+                        <div class="item-text-center item-text-wrap">
+                            <h2>Second Place Finishes: {{user.timesSecondPlaceRanking}}</h2>
+                        </div>
+                    </a>
+                    <a class="item item-thumbnail-left">
+                        <img src="stylesheets/images/BronzeCup.png">
+                        <div class="item-text-center item-text-wrap">
+                            <h2>Third Place Finishes: {{user.timesThirdPlaceRanking}}</h2>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="padding">
+                <h4 class="border-top">
+                  <i class="icon ion-social-buffer"></i>
+                  Social Accounts
+              </h4>
+                <div class="row">
+                    <div class="col text-left">
+                        <a class="button button-sm button-assertive button-icon-left ion-social-facebook" ng-if="user.facebook" ng-click="unlink('facebook')">  Unlink Facebook </a>
+                        <a class="button button-sm button-positive button-icon-left ion-social-facebook" ng-if="!user.facebook" ng-click="link('facebook')">  Link Facebook </a>
+                        <div class="spacer" style="height: 29px;"></div>
+                        <a class="button button-sm button-assertive button-icon-left ion-social-twitter" ng-if="user.twitter" ng-click="unlink('twitter')">  Unlink Twitter </a>
+                        <a class="button button-sm button-calm button-icon-left ion-social-twitter" ng-if="!user.twitter" ng-click="link('twitter')">  Link Twitter </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="padding">
+                <h4 class="border-top">
+                  <i class="icon ion-android-people"></i>
+                  Contest History
+              </h4>
+                                  <div class="list" ng-repeat="userPick in userPicks" style="background-color: #223843">
+                                    <div class="padding">
+                                        <a ui-sref="tabsController.contest({id: userPick.contest._id})" style="text-decoration: none;">
+                        <div class="item" style="color: #f2f2f2; background-color:#223843; vertical-align:middle;">
+                            <div class="card">
+                            <div class="text-center">
+                               <div class="row" style="background-color:#223842 margin-bottom: 4px;">
+                                        <div class="col">
+                                            <h3 style="color: #FFE939; opacity: 1; font-size: 16px;"><i class="icon ion-android-calendar"></i> Start:</h3>
+                                            <p style="color: #f2f2f2;">{{userPick.contest.start | amDateFormat: 'MMMM Mo'}}</p>
+                                        </div>
+                                        <div class="col">
+                                            <h3 style="color: #FFE939; opacity: 1; font-size: 16px;"><i class="icon ion-android-calendar"></i> End:</h3>
+                                            <p style="color: #f2f2f2">{{userPick.contest.end | amDateFormat: 'MMMM Mo'}}</p>
+                                        </div>
+                                    </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <img src="stylesheets/images/king.png" width="56" height="56" align="center" style="margin-bottom: 10px;" />
+                                        <h5 style="color: #FFE939">Total Users:</h5>
+                                        <p style="color:#f2f2f2">{{userPick.contest.participants}}</p>
+                                    </div>
+                                    <div class="col">
+                                        <img src="stylesheets/images/king.png" width="56" height="56" align="center" style="margin-bottom: 10px;" />
+                                        <h5 style="color: #FFE939">Total Points:</h5>
+                                        <p style="color: #f2f2f2">{{userPick.contestPoints}}</p>
+                                    </div>
+                                    <div class="col">
+                                        <img src="stylesheets/images/rank.png" width="56" height="56" align="center" style="margin-bottom: 10px;"/>
+                                        <h5 style="color: #FFE939">Rank:</h5>
+                                        <p style="color: #f2f2f2">{{userPick.contestRank}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <h5 style="color: #FFE939">Selected Teams: </h5>
+                                <p style="color: #f2f2f2; font-size: 9px; white-space: normal;">{{userPick.selectedTeams}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </ion-content>
+</ion-view>

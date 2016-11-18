@@ -1,0 +1,110 @@
+<ion-view title="Contest Lobby" id="contestLobby" cache-view="false">
+    <ion-content class="has-header" overflow-scroll="true">
+        <div class="padding">
+            <div class="list">
+                <div class="text-center">
+                    <div class="tabs-striped tabs-color-assertive2 tabs-icon-top" style="position: static; margin-bottom: 15px;">
+                        <div class="tabs" style="position: static; background-color: #474747; border-bottom:0px">
+                            <a class="tab-item" data-ink-color="#ef473a" data-ink-opacity=".35" ng-hide="activeTag == 'all'" ng-click="setTag('all'); getTag('all');">
+                                <i class="icon ion-ios-flame-outline"></i>
+                                <strong>ALL</strong>
+                            </a>
+                            <a class="tab-item active" data-ink-color="#ef473a" data-ink-opacity=".35" ng-show="activeTag == 'all'" ng-click="setTag('all')">
+                                <i class="icon ion-ios-flame"></i>
+                                <strong>ALL</strong>
+                            </a>
+                            <a class="tab-item" data-ink-color="#ef473a" data-ink-opacity=".35" ng-hide="activeTag == 'NFL'" ng-click="setTag('NFL'); getTag('NFL');">
+                                <i class="icon ion-ios-americanfootball-outline"></i>
+                                <strong>NFL</strong>
+                            </a>
+                            <a class="tab-item active" data-ink-color="#ef473a" data-ink-opacity=".35" ng-show="activeTag == 'NFL'" ng-click="setTag('NFL')">
+                                <i class="icon ion-ios-americanfootball"></i>
+                                <strong>NFL</strong>
+                            </a>
+                            <a class="tab-item" id="active3" data-ink-color="#ef473a" data-ink-opacity=".35" ng-hide="activeTag == 'NBA'" ng-click="setTag('NBA'); getTag('NBA');">
+                                <i class="icon ion-ios-basketball-outline"></i>
+                                <strong>NBA</strong>
+                            </a>
+                            <a class="tab-item active" id="active3" data-ink-color="#ef473a" data-ink-opacity=".35" ng-show="activeTag == 'NBA'" ng-click="setTag('NBA')">
+                                <i class="icon ion-ios-basketball"></i>
+                                <strong>NBA</strong>
+                            </a>
+                        </div>
+                        <div class="tabs" style="position: static; background-color: #474747; border-bottom:0px">
+                            <a class="tab-item" id="active2" data-ink-color="#ef473a" data-ink-opacity=".35" ng-hide="activeTag == 'MLB'" ng-click="setTag('MLB'); getTag('MLB');">
+                                <i class="icon ion-ios-baseball-outline"></i>
+                                <strong>MLB</strong>
+                            </a>
+                            <a class="tab-item active" id="active2" data-ink-color="#ef473a" data-ink-opacity=".35" ng-show="activeTag == 'MLB'" ng-click="setTag('MLB')">
+                                <i class="icon ion-ios-baseball"></i>
+                                <strong>MLB</strong>
+                            </a>
+                            <a class="tab-item" data-ink-color="#ef473a" data-ink-opacity=".35" ng-hide="activeTag == 'NCAAF'" ng-click="setTag('NCAAF'); getTag('NCAAF');">
+                                <i class="icon ion-ios-americanfootball-outline"></i>
+                                <strong>NCAAF</strong>
+                            </a>
+                            <a class="tab-item active" data-ink-color="#ef473a" data-ink-opacity=".35" ng-show="activeTag == 'NCAAF'" ng-click="setTag('NCAAF')">
+                                <i class="icon ion-ios-americanfootball"></i>
+                                <strong>NCAAF</strong>
+                            </a>
+                            <a class="tab-item" data-ink-color="#ef473a" data-ink-opacity=".35" ng-hide="activeTag == 'NCAAM'" ng-click="setTag('NCAAM'); getTag('NCAAM');">
+                                <i class="icon ion-ios-basketball-outline"></i>
+                                <strong>NCAAM</strong>
+                            </a>
+                            <a class="tab-item active" data-ink-color="#ef473a" data-ink-opacity=".35" ng-show="activeTag == 'NCAAM'" ng-click="setTag('NCAAM')">
+                                <i class="icon ion-ios-basketball"></i>
+                                <strong>NCAAM</strong>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="isAuthenticated()">
+                <div class="list card" ng-repeat="contest in contests | FilterContests:selectedTag">
+                    <a ui-sref="tabsController.contest({id: contest._id})" style="text-decoration: none;">
+                        <div class="item-divider" style="border-bottom: thin ridge #FFE939;">
+                            <div class="item">
+                                <div class="row">
+                                    <div class="col col-50 verticalLineRightDate" style="text-align: center;">
+                                        <h3 style="color: #FFE939; opacity: 1; font-size: 16px;"><i class="icon ion-android-calendar"></i> Start:</h3>
+                                        <p style="color: #f2f2f2; font-size: 12px;">{{contest.start | amDateFormat: 'dddd, h:mm a'}}</p>
+                                    </div>
+                                    <div class="col col-50" style="text-align: center;">
+                                        <h3 style="color: #FFE939; opacity: 1; font-size: 16px;"><i class="icon ion-android-calendar"></i> End:</h3>
+                                        <p style="color: #f2f2f2; font-size: 12px;">{{contest.end | amDateFormat: 'dddd, h:mm a'}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="text-center">
+                                <div class="row">
+                                    <div class="col verticalLineRight">
+                                        <p style="color: #FFE939; font-size: 12px;">ID:</p>
+                                        <h4 style="color: #f2f2f2;">{{contest.id}}</h4>
+                                    </div>
+                                    <div class="col">
+                                        <p style="color: #FFE939; font-size: 12px;">Participants:</p>
+                                        <h4 style="color: #f2f2f2;">{{contest.participants}}</h4>
+                                    </div>
+                                    <div class="col verticalLineLeft">
+                                        <p style="color: #FFE939; font-size: 12px;">Matchups:</p>
+                                        <h4 style="color: #f2f2f2;">{{contest.numberOfMatchups}}</h4>
+                                    </div>
+                                </div>
+                                <p style="color: #FFE939; font-size: 12px;">League(s) Included:</p>
+                                <h4 style="color: #f2f2f2;">{{contest.tags}}</h4>
+                            </div>
+                        </div>
+                    </a>
+
+                </div>
+            </div>
+            <div ng-if="!isAuthenticated()">
+                <div class="card text-center">
+                    <h5>Please <a style="text-decoration: none;" href="javascript:void(0)" ng-click="openModal(1)">login</a> or <a style="text-decoration: none;" href="javascript:void(0)" ng-click="openModal(2)">register</a> to continue to the contest lobby.</h5>
+                </div>
+            </div>
+
+    </ion-content>
+</ion-view>
